@@ -1,7 +1,5 @@
 module Main where
 
-import Data.List
-
 main :: IO ()
 main = interact gen
 
@@ -36,10 +34,9 @@ deconstruct :: String -> [String]
 deconstruct s =
     nestFork
   $ map ((++ ">") . concat)
-  $ transpose
-  $ map deconstructChar s
+  $ map (\i -> map (deconstructChar i) s) [0..127]
 
-deconstructChar :: Char -> [String]
-deconstructChar c =
-  flip map [0..127] $ \n ->
-    if n < fromEnum c then ">+" else "> "
+deconstructChar :: Int -> Char -> String
+deconstructChar target c
+  | target < fromEnum c = ">+"
+  | otherwise = "> "
