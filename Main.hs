@@ -33,8 +33,8 @@ indent = ("  " ++)
 deconstruct :: String -> [String]
 deconstruct s =
     nestFork
-  $ map ((++ ">") . concat)
-  $ map (\i -> map (deconstructChar i) s) [0..127]
+  $ flip map [0..127]
+  $ \i -> concat (deconstructChar i <$> s) ++ ">"
 
 deconstructChar :: Int -> Char -> String
 deconstructChar target c
