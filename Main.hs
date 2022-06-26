@@ -15,7 +15,12 @@ printer =
   ]
 
 fork :: [String] -> [String] -> [String]
-fork a b = ["&+-[+-"] ++ map i a ++ ["]["] ++ map i b ++ ["]"]
+fork a b =
+     ["&+-[+-"]
+  ++ map indent a
+  ++ ["]["]
+  ++ map indent b
+  ++ ["]"]
 
 nestFork :: [String] -> [String]
 nestFork [] = []
@@ -25,19 +30,16 @@ nestFork progs =
   in
   fork (nestFork a) (nestFork b)
 
-i = ("  " ++)
+indent = ("  " ++)
 
 deconstruct :: String -> [String]
 deconstruct s =
     nestFork
-  $ map (++ ">")
-  $ map concat
+  $ map ((++ ">") . concat)
   $ transpose
-  $ map char s
+  $ map deconstructChar s
 
-char :: Char -> [String]
-char c =
-  let i = fromEnum c
-      f n = if n < i then ">+" else "> "
-  in
-  map f [0..127]
+deconstructChar :: Char -> [String]
+deconstructChar c =
+  flip map [0..127] $ \n ->
+    if n < fromEnum c then ">+" else "> "
